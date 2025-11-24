@@ -1,0 +1,25 @@
+name: Deploy CPI iFlow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Zip iFlow
+        run: |
+          cd CPI_Mail_Reader
+          zip -r ../CPI_Mail_Reader.zip .
+          cd ..
+
+      - name: Deploy to CPI
+        run: |
+          curl -X POST \
+          "${{ secrets.CPI_URL }}/api/v1/DeployIntegrationArtifact?artifactId=CPI_Mail_Reader&version=1.0.0" \
+          -u "${{ secrets.CPI_USER }}:${{ secrets.CPI_PASS }}"
