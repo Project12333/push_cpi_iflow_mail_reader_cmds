@@ -14,12 +14,10 @@ jobs:
       
       - name: Zip iFlow
         run: |
-          cd CPI_Mail_Reader
-          zip -r ../CPI_Mail_Reader.zip .
-          cd ..
+          zip -r iFlow.zip META-INF src .project metainfo.prop
 
       - name: Deploy to CPI
         run: |
           curl -X POST \
-          "${{ secrets.CPI_URL }}/api/v1/DeployIntegrationArtifact?artifactId=CPI_Mail_Reader&version=1.0.0" \
+          "${{ secrets.CPI_URL }}/api/v1/DeployIntegrationArtifact?artifactId=Project12333&version=1.0.0" \
           -u "${{ secrets.CPI_USER }}:${{ secrets.CPI_PASS }}"
