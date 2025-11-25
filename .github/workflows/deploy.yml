@@ -3,21 +3,32 @@ name: Deploy CPI iFlow
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Zip iFlow
-        run: |
-          zip -r iFlow.zip META-INF src .project metainfo.prop
+      # 1️⃣ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
+      # 2️⃣ Zip the iFlow
+      - name: Create ZIP
+        run: |
+          zip -r gmail.zip META-INF src .project metainfo.prop
+
+      # 3️⃣ Deploy to CPI
       - name: Deploy to CPI
         run: |
           curl -X POST \
-          "${{ secrets.CPI_URL }}/api/v1/DeployIntegrationArtifact?artifactId=Project12333&version=1.0.0" \
-          -u "${{ secrets.CPI_USER }}:${{ secrets.CPI_PASS }}"
+          "${{ secrets.CPI_URL }}/itspaces/Operations/com.sap.it.op.tmn.commands.dashboard.web.jar/com.sap.it.op.tmn.commands.dashboard.web.html/Deployment" \
+          -u "${{ secrets.CPI_USER }}:${{ secrets.CPI_PASS }}" \
+          -H "Accept: application/json" \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@gmail.zip" \
+          -F "Name=gmail" \
+          -F "Id=gmail" \
+          -F "PackageId=gmailsender"
